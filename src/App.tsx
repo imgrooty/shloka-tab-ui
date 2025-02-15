@@ -1,19 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { Sun, Moon, Wind, Menu, X, Book, Heart, Coffee, ExternalLink, Plus, Palette } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Sun, Moon, Wind, Menu, X, Book, Heart, Coffee, ExternalLink, Plus, Palette, LucideIcon } from 'lucide-react';
+import { ShlokaData, RecentSite, QuickLinkProps, SidebarLinkProps } from './types';
 
 function App() {
-  const [time, setTime] = useState(new Date());
-  const [greeting, setGreeting] = useState('');
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
-  const [isThemePickerOpen, setThemePickerOpen] = useState(false);
-  const [themeColor, setThemeColor] = useState('#DFFF00'); // Default to chartreuse yellow
-  const [recentSites, setRecentSites] = useState([
-    { title: 'Gmail', url: 'https://gmail.com', icon: '📧' },
-    { title: 'Calendar', url: 'https://calendar.google.com', icon: '📅' },
-    { title: 'Drive', url: 'https://drive.google.com', icon: '📁' },
-    { title: 'YouTube', url: 'https://youtube.com', icon: '▶️' }
+  const [time, setTime] = useState<Date>(new Date());
+  const [greeting, setGreeting] = useState<string>('');
+  const [isSidebarOpen, setSidebarOpen] = useState<boolean>(false);
+  const [isThemePickerOpen, setThemePickerOpen] = useState<boolean>(false);
+  const [themeColor, setThemeColor] = useState<string>('#DFFF00'); // Default to chartreuse yellow
+  const [recentSites, setRecentSites] = useState<RecentSite[]>([
+    { title: 'Gmail', url: 'https://gmail.com', favicon: '📧' },
+    { title: 'Calendar', url: 'https://calendar.google.com', favicon: '📅' },
+    { title: 'Drive', url: 'https://drive.google.com', favicon: '📁' },
+    { title: 'YouTube', url: 'https://youtube.com', favicon: '▶️' }
   ]);
-  const [bookmarks, setBookmarks] = useState([
+  const [bookmarks, setBookmarks] = useState<
+    { title: string; url: string; icon: string }[]
+  >([
     { title: 'Add Bookmark', url: '', icon: '➕' },
     { title: 'Add Bookmark', url: '', icon: '➕' },
     { title: 'Add Bookmark', url: '', icon: '➕' },
@@ -41,7 +44,7 @@ function App() {
     else setGreeting('शुभ रात्रि');
   }, [time]);
 
-  const addBookmark = (index) => {
+  const addBookmark = (index: number) => {
     const url = prompt('Enter website URL:');
     if (url) {
       const title = prompt('Enter bookmark title:');
@@ -53,7 +56,7 @@ function App() {
     }
   };
 
-  const shlokas = [
+  const shlokas: ShlokaData[] = [
     {
       sanskrit: "कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।\nमा कर्मफलहेतुर्भूर्मा ते सङ्गोऽस्त्वकर्मणि॥",
       transliteration: "Karmanye vadhikaraste Ma Phaleshu Kadachana\nMa Karmaphalaheturbhurma Te Sangostvakarmani",
@@ -65,11 +68,82 @@ function App() {
       transliteration: "Vidya Vinaya Sampanne Brahmane Gavi Hastini\nShuni Chaiva Shvapake Cha Panditah Samadarshinah",
       meaning: "The humble sage, by virtue of true knowledge, sees with equal vision a learned and gentle Brahmin, a cow, an elephant, a dog and an outcaste.",
       source: "Bhagavad Gita 5.18"
+    },
+    {
+      sanskrit: "उद्धरेदात्मनाऽऽत्मानं नात्मानमवसादयेत्।\nआत्मैव ह्यात्मनो बन्धुरात्मैव रिपुरात्मनः॥",
+      transliteration: "Uddhared Atmanatmanam Natmanam Avasadayet\nAtmaiva Hyatmano Bandhuratmaiva Ripuratmanah",
+      meaning: "One must elevate, not degrade, oneself by one's own mind.\nThe mind is a friend to the self, and it can also be its enemy.",
+      source: "Bhagavad Gita 6.5"
+    },
+    {
+      sanskrit: "यो न हृष्यति न द्वेष्टि न शोचति न काङ्क्षति।\nशुभाशुभपरित्यागी भक्तिमान्यः स मे प्रियः॥",
+      transliteration: "Yo Na Hrishyati Na Dveshti Na Shochati Na Kankshati\nShubhashubha Parityagi Bhaktimanyah Sa Me Priyah",
+      meaning: "One who neither rejoices nor hates, neither grieves nor desires,\nand who has renounced both good and evil actions, such a devotee is dear to Me.",
+      source: "Bhagavad Gita 12.17"
+    },
+    {
+      sanskrit: "वासांसि जीर्णानि यथा विहाय\nनवानि गृह्णाति नरोऽपराणि।\nतथा शरीराणि विहाय जीर्णा-\nन्यन्यानि संयाति नवानि देही॥",
+      transliteration: "Vasamsi Jirnani Yatha Vihaya\nNavani Grhnati Naro ’parani\nTatha Sarirani Vihaya Jirnany\nAnyani Samyati Navani Dehi",
+      meaning: "Just as a person discards worn-out clothes and wears new ones,\nso also the embodied soul casts off worn-out bodies and enters new ones.",
+      source: "Bhagavad Gita 2.22"
+    },
+    {
+      sanskrit: "अशोच्यानन्वशोचस्त्वं प्रज्ञावादांश्च भाषसे।\nगतासूनगतासूंश्च नानुशोचन्ति पण्डिताः॥",
+      transliteration: "Ashochyan Anvashochas Tvam Prajnavadamscha Bhashase\nGatasun Agatasumshcha Nanushochanti Panditah",
+      meaning: "You grieve for those who should not be grieved for, yet you speak words of wisdom.\nThe wise grieve neither for the living nor for the dead.",
+      source: "Bhagavad Gita 2.11"
+    },
+    {
+      sanskrit: "सुखदुःखे समे कृत्वा लाभालाभौ जयाजयौ।\nततो युद्धाय युज्यस्व नैवं पापमवाप्स्यसि॥",
+      transliteration: "Sukha Dukhe Same Krutva Labhalabhau Jayajayau\nTato Yuddhaya Yujyasva Naivam Papam Avapsyasi",
+      meaning: "Considering happiness and distress, gain and loss, victory and defeat as the same,\nengage in your duty and you shall not incur sin.",
+      source: "Bhagavad Gita 2.38"
+    },
+    {
+      sanskrit: "यदृच्छालाभसन्तुष्टो द्वन्द्वातीतो विमत्सरः।\nसमः सिद्धावसिद्धौ च कृत्वापि न निबध्यते॥",
+      transliteration: "Yadrichchha-labha-santushto Dvandvatito Vimatsarah\nSamah Siddhav Asiddhau Cha Krutvapi Na Nibadhyate",
+      meaning: "He who is satisfied with whatever comes by chance, free from dualities and envy,\nand steady in both success and failure, is not bound by his actions.",
+      source: "Bhagavad Gita 4.22"
+    },
+    {
+      sanskrit: "न हि कश्चित्क्षणमपि जातु तिष्ठत्यकर्मकृत्।\nकार्यते ह्यवशः कर्म सर्वः प्रकृतिजैर्गुणैः॥",
+      transliteration: "Na Hi Kashchit Kshanam Api Jatu Tishthatyakarma-krit\nKaryate Hyavashah Karma Sarvah Prakriti Jair Gunaih",
+      meaning: "No one can remain inactive even for a moment.\nEveryone is forced to act under the influence of nature’s qualities.",
+      source: "Bhagavad Gita 3.5"
+    },
+    {
+      sanskrit: "अव्यक्तादीनि भूतानि व्यक्तमध्यानि भारत।\nअव्यक्तनिधनान्येव तत्र का परिदेवना॥",
+      transliteration: "Avyaktadini Bhutani Vyaktamadhyani Bharata\nAvyakta-nidhananyeva Tatra Ka Paridevana",
+      meaning: "All beings are unmanifest before birth, manifest in life,\nand unmanifest again at death. So why lament?",
+      source: "Bhagavad Gita 2.28"
+    },
+    {
+      sanskrit: "समः शत्रौ च मित्रे च तथा मानापमानयोः।\nशीतोष्णसुखदुःखेषु समः सङ्गविवर्जितः॥",
+      transliteration: "Samah Shatrau Cha Mitre Cha Tatha Mana-apamanayoh\nShitoshna-sukha-duhkheshu Samah Sangavivarjitah",
+      meaning: "One who remains balanced in enemies and friends, in honor and dishonor,\nand remains unaffected by heat, cold, happiness, and distress, is truly wise.",
+      source: "Bhagavad Gita 12.18"
     }
   ];
 
-  const randomShloka = shlokas[Math.floor(Math.random() * shlokas.length)];
+const addRecentSite = (site: RecentSite) => {
+  setRecentSites(prevSites => {
+    // Prevent duplicates and limit to 5 recent sites
+    const updatedSites = prevSites.filter(s => s.url !== site.url);
+    return [site, ...updatedSites].slice(0, 5);
+  });
+};
+// You could call this when a user visits a site
+useEffect(() => {
+  // Example: track current tab or site visit
+  const currentSite: RecentSite = {
+    title: 'Example Site',
+    url: 'https://example.com',
+    favicon: '🌐'
+  };
+  addRecentSite(currentSite);
+}, []); // Add appropriate dependencies
 
+  const randomShloka = shlokas[Math.floor(Math.random() * shlokas.length)];
   return (
     <div 
       className="min-h-screen bg-slate-900 text-white"
@@ -152,21 +226,6 @@ function App() {
                 <SidebarLink icon={<Coffee className="w-5 h-5" />} title="Mindfulness" color={themeColor} />
               </div>
             </div>
-            <div>
-              <h3 className="text-sm font-medium uppercase tracking-wider mb-4" style={{ color: themeColor }}>Recent Visits</h3>
-              <div className="space-y-3">
-                {recentSites.slice(0, 3).map((site, index) => (
-                  <a 
-                    key={index}
-                    href={site.url}
-                    className="flex items-center space-x-3 text-white/60 hover:text-white transition-colors"
-                  >
-                    <span>{site.icon}</span>
-                    <span className="text-sm">{site.title}</span>
-                  </a>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -231,19 +290,19 @@ function App() {
             {/* Quick Links - Updated styles */}
             <div className="grid grid-cols-3 gap-4">
               <QuickLink 
-                icon={<Sun className="w-6 h-6" />}
+                icon={<Sun className="w-6 h-6" />} 
                 title="Morning Prayer"
                 description="Start your day with devotion"
                 color={themeColor}
               />
               <QuickLink 
-                icon={<Moon className="w-6 h-6" />}
+                icon={<Moon className="w-6 h-6" />} 
                 title="Evening Reflection"
                 description="End your day in peace"
                 color={themeColor}
               />
               <QuickLink 
-                icon={<Wind className="w-6 h-6" />}
+                icon={<Wind className="w-6 h-6" />} 
                 title="Meditation"
                 description="Find your inner peace"
                 color={themeColor}
@@ -258,17 +317,6 @@ function App() {
         <div className="max-w-4xl mx-auto p-4">
           <h3 className="text-xs font-medium uppercase tracking-wider mb-3" style={{ color: themeColor }}>Recently Visited</h3>
           <div className="flex space-x-3 overflow-x-auto pb-2">
-            {recentSites.map((site, index) => (
-              <a
-                key={index}
-                href={site.url}
-                className="flex items-center space-x-2 bg-white/5 px-4 py-2 rounded-lg hover:bg-white/10 transition-all group border border-white/10"
-              >
-                <span>{site.icon}</span>
-                <span className="text-sm text-white/80 group-hover:text-white transition-colors">{site.title}</span>
-                <ExternalLink className="w-4 h-4 text-white/40 group-hover:text-white transition-colors" />
-              </a>
-            ))}
           </div>
         </div>
       </div>
@@ -276,27 +324,25 @@ function App() {
   );
 }
 
-function QuickLink({ icon, title, description, color }) {
+function QuickLink({ icon: Icon, title, description, color }: QuickLinkProps) {
   return (
-    <div className="bg-white/5 backdrop-blur-lg p-6 rounded-xl hover:bg-white/10 transition-all cursor-pointer group border border-white/10">
-      <div className="mb-4" style={{ color }}>
-        {icon}
-      </div>
-      <h3 className="text-lg font-medium mb-2 group-hover:text-white transition-colors" style={{ color }}>
-        {title}
-      </h3>
-      <p className="text-sm text-white/60 group-hover:text-white/80 transition-colors">
-        {description}
-      </p>
-    </div>
+    <a href="#" className="flex flex-col items-center bg-white/5 backdrop-blur-lg p-4 rounded-2xl hover:bg-white/10 transition-all border border-white/10">
+      <span className="mb-2" style={{ color }}>
+        <Icon />
+      </span>
+      <span className="text-sm font-medium text-white/80">{title}</span>
+      <span className="text-xs text-white/60">{description}</span>
+    </a>
   );
 }
 
-function SidebarLink({ icon, title, color }) {
+function SidebarLink({ icon: Icon, title, color }: SidebarLinkProps) {
   return (
     <a href="#" className="flex items-center space-x-3 text-white/60 hover:text-white transition-colors group">
-      <span style={{ color }}>{icon}</span>
-      <span className="text-sm">{title}</span>
+      <span style={{ color }}>
+        <Icon />
+      </span>
+      <span>{title}</span>
     </a>
   );
 }

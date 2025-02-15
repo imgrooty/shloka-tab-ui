@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Shloka Tab UI",
+  "version": "1.0.0",
+  "description": "A browser extension for Shloka Tab UI",
+  "action": {
+    "default_popup": "dist/index.html",
+    "default_icon": {
+      "16": "dist/assets/icons/icon0.jpeg",
+      "48": "dist/assets/icons/icon1.jpeg",
+      "128": "dist/assets/icons/icon2.jpeg"
+    }
+  },
+  "icons": {
+    "16": "dist/assets/icons/icon0.jpeg",
+    "48": "dist/assets/icons/icon1.jpeg", 
+    "128": "dist/assets/icons/icon2.jpeg"
+  },
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "chrome_url_overrides": {
+    "newtab": "dist/index.html"
+  },
+  "background": {
+    "service_worker": "dist/assets/background.js"
+  }
+}
