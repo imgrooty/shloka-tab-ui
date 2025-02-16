@@ -24,6 +24,6 @@
     "newtab": "dist/index.html"
   },
   "background": {
-    "service_worker": "dist/assets/background.js"
+    "service_worker": "./src/background.js"
   }
 }

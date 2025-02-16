@@ -1,19 +1,86 @@
 import { useState, useEffect } from 'react';
-import { Sun, Moon, Wind, Menu, X, Book, Heart, Coffee, ExternalLink, Plus, Palette, LucideIcon } from 'lucide-react';
-import { ShlokaData, RecentSite, QuickLinkProps, SidebarLinkProps } from './types';
+import { Sun, Moon, Wind, Menu, X, Book, Heart, Coffee, Plus, Palette, Image } from 'lucide-react';
+import { ShlokaData, ThemeColor, BackgroundImage, QuickLinkProps, SidebarLinkProps } from './types';
 
 function App() {
+  const predefinedThemes: ThemeColor[] = [
+    {
+      name: 'Spiritual Saffron',
+      primary: '#D35400',     // Deep Saffron
+      secondary: '#F39C12',   // Bright Saffron
+      background: '#2C3E50',  // Dark Blue-Gray for contrast
+      accent: '#FFFFFF'       // White for text
+    },
+    {
+      name: 'Divine Indigo',
+      primary: '#2980B9',     // Strong Blue
+      secondary: '#3498DB',   // Bright Blue
+      background: '#2C3E50',  // Dark Blue-Gray
+      accent: '#ECF0F1'       // Light Gray-White
+    },
+    {
+      name: 'Emerald Wisdom',
+      primary: '#27AE60',     // Emerald Green
+      secondary: '#2ECC71',   // Bright Green
+      background: '#34495E',  // Dark Grayish Blue
+      accent: '#F1F8FF'       // Pale Blue-White
+    },
+    {
+      name: 'Royal Amethyst',
+      primary: '#8E44AD',     // Deep Purple
+      secondary: '#9B59B6',   // Bright Purple
+      background: '#2C3E50',  // Dark Blue-Gray
+      accent: '#ECE8F4'       // Soft Lavender-White
+    },
+    {
+      name: 'Cosmic Crimson',
+      primary: '#C0392B',     // Deep Red
+      secondary: '#E74C3C',   // Bright Red
+      background: '#2C3E50',  // Dark Blue-Gray
+      accent: '#F4F6F7'       // Almost White
+    },
+    {
+      name: 'Serene Ocean',
+      primary: '#16A085',     // Teal Green
+      secondary: '#1ABC9C',   // Bright Teal
+      background: '#34495E',  // Dark Grayish Blue
+      accent: '#E8F6F3'       // Pale Mint-White
+    }
+  ];
+
+  const backgroundImages: BackgroundImage[] = [
+    {
+      id: 'mahabharata-1',
+      title: 'Krishna and Arjuna in Battlefield',
+      url: 'https://www.pinterest.com/pin/19914423346723834/',
+      source: 'Mahabharata',
+      photographer: 'Spiritual Art Gallery'
+    },
+    {
+      id: 'ramayana-1',
+      title: 'Rama Defeating Ravana',
+      url: 'https://www.pinterest.com/pin/415175659420380619/',
+      source: 'Ramayana',
+      photographer: 'Mythological Captures'
+    },
+    {
+      id: 'vedic-1',
+      title: 'Spiritual Meditation Scene',
+      url: 'https://images.unsplash.com/photo-1601933240957-d6abe5a7f0f8?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+      source: 'Vedic Scriptures',
+      photographer: 'Spiritual Moments'
+    }
+  ];
+
   const [time, setTime] = useState<Date>(new Date());
   const [greeting, setGreeting] = useState<string>('');
   const [isSidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [isThemePickerOpen, setThemePickerOpen] = useState<boolean>(false);
-  const [themeColor, setThemeColor] = useState<string>('#DFFF00'); // Default to chartreuse yellow
-  const [recentSites, setRecentSites] = useState<RecentSite[]>([
-    { title: 'Gmail', url: 'https://gmail.com', favicon: '📧' },
-    { title: 'Calendar', url: 'https://calendar.google.com', favicon: '📅' },
-    { title: 'Drive', url: 'https://drive.google.com', favicon: '📁' },
-    { title: 'YouTube', url: 'https://youtube.com', favicon: '▶️' }
-  ]);
+  const [isBackgroundPickerOpen, setBackgroundPickerOpen] = useState<boolean>(false);
+  
+  const [currentTheme, setCurrentTheme] = useState<ThemeColor>(predefinedThemes[0]);
+  const [currentBackground, setCurrentBackground] = useState<BackgroundImage>(backgroundImages[0]);
+  
   const [bookmarks, setBookmarks] = useState<
     { title: string; url: string; icon: string }[]
   >([
@@ -24,13 +91,7 @@ function App() {
     { title: 'Add Bookmark', url: '', icon: '➕' }
   ]);
 
-  const themeColors = [
-    '#DFFF00', // Chartreuse yellow
-    '#FFBF00', // Amber
-    '#FF7F50', // Coral
-    '#DE3163', // Cerise
-  ];
-
+  
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 60000);
     return () => clearInterval(timer);
@@ -43,6 +104,18 @@ function App() {
     else if (hour < 20) setGreeting('शुभ संध्या');
     else setGreeting('शुभ रात्रि');
   }, [time]);
+
+  useEffect(() => {
+    // Automatically rotate background images every 5 minutes
+    const backgroundRotationInterval = setInterval(() => {
+      const currentIndex = backgroundImages.findIndex(bg => bg.id === currentBackground.id);
+      const nextIndex = (currentIndex + 1) % backgroundImages.length;
+      setCurrentBackground(backgroundImages[nextIndex]);
+    }, 5 * 60 * 1000); // 5 minutes
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(backgroundRotationInterval);
+  }, [currentBackground]);
 
   const addBookmark = (index: number) => {
     const url = prompt('Enter website URL:');
@@ -125,87 +198,127 @@ function App() {
     }
   ];
 
-const addRecentSite = (site: RecentSite) => {
-  setRecentSites(prevSites => {
-    // Prevent duplicates and limit to 5 recent sites
-    const updatedSites = prevSites.filter(s => s.url !== site.url);
-    return [site, ...updatedSites].slice(0, 5);
-  });
-};
-// You could call this when a user visits a site
-useEffect(() => {
-  // Example: track current tab or site visit
-  const currentSite: RecentSite = {
-    title: 'Example Site',
-    url: 'https://example.com',
-    favicon: '🌐'
-  };
-  addRecentSite(currentSite);
-}, []); // Add appropriate dependencies
-
   const randomShloka = shlokas[Math.floor(Math.random() * shlokas.length)];
   return (
     <div 
-      className="min-h-screen bg-slate-900 text-white"
+      className="min-h-screen text-white"
       style={{
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1600577916048-804c9191e36c?auto=format&fit=crop&q=80')`,
+        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${currentBackground.url})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
+        backgroundAttachment: 'fixed',
+        backgroundColor: currentTheme.background
       }}
     >
-      {/* Theme Picker - Updated styles */}
-      <div className="fixed top-6 right-6 z-20">
+      {/* Theme and Background Pickers */}
+      <div className="fixed top-6 right-6 z-20 flex space-x-2">
         <button
           onClick={() => setThemePickerOpen(!isThemePickerOpen)}
           className="bg-white/5 backdrop-blur-lg p-3 rounded-full hover:bg-white/10 transition-all border border-white/10"
-          style={{ color: themeColor }}
+          style={{ color: currentTheme.primary }}
         >
           <Palette className="w-5 h-5" />
         </button>
+        <button
+          onClick={() => setBackgroundPickerOpen(!isBackgroundPickerOpen)}
+          className="bg-white/5 backdrop-blur-lg p-3 rounded-full hover:bg-white/10 transition-all border border-white/10"
+          style={{ color: currentTheme.primary }}
+        >
+          <Image className="w-5 h-5" />
+        </button>
+
         {isThemePickerOpen && (
-          <div className="absolute right-0 mt-2 p-3 bg-slate-900/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/10">
+          <div className="absolute right-0 mt-14 p-3 bg-slate-900/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/10">
             <div className="grid grid-cols-2 gap-2">
-              {themeColors.map((color) => (
+              {predefinedThemes.map((theme) => (
                 <button
-                  key={color}
+                  key={theme.name}
                   onClick={() => {
-                    setThemeColor(color);
+                    setCurrentTheme(theme);
                     setThemePickerOpen(false);
                   }}
-                  className="w-8 h-8 rounded-full ring-2 ring-white/10 hover:ring-white/30 transition-all"
-                  style={{ backgroundColor: color }}
+                  className="w-10 h-10 rounded-full ring-2 ring-white/10 hover:ring-white/30 transition-all"
+                  style={{ 
+                    backgroundColor: theme.primary,
+                    boxShadow: `0 0 10px ${theme.secondary}`
+                  }}
+                  title={theme.name}
                 />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {isBackgroundPickerOpen && (
+          <div className="absolute right-0 mt-14 p-3 bg-slate-900/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/10 w-64">
+            <div className="grid grid-cols-2 gap-2">
+              {backgroundImages.map((bg) => (
+                <button
+                  key={bg.id}
+                  onClick={() => {
+                    setCurrentBackground(bg);
+                    setBackgroundPickerOpen(false);
+                  }}
+                  className="rounded-lg overflow-hidden ring-2 ring-white/10 hover:ring-white/30 transition-all"
+                >
+                  <img 
+                    src={bg.url} 
+                    alt={bg.title} 
+                    className="w-full h-20 object-cover"
+                  />
+                </button>
               ))}
             </div>
           </div>
         )}
       </div>
 
-      {/* Bookmarks - Updated styles */}
-      <div className="fixed right-6 top-24 space-y-3 z-10">
-        {bookmarks.map((bookmark, index) => (
-          bookmark.url ? (
-            <a
-              key={index}
-              href={bookmark.url}
-              className="flex items-center bg-white/5 backdrop-blur-lg px-4 py-3 rounded-xl hover:bg-white/10 transition-all group border border-white/10"
-              style={{ color: themeColor }}
-            >
-              <span className="text-lg mr-3">{bookmark.icon}</span>
-              <span className="text-sm font-medium text-white/80 group-hover:text-white transition-colors">{bookmark.title}</span>
-            </a>
-          ) : (
-            <button
-              key={index}
-              onClick={() => addBookmark(index)}
-              className="w-full bg-white/5 backdrop-blur-lg p-3 rounded-xl hover:bg-white/10 transition-all border border-white/10"
-              style={{ color: themeColor }}
-            >
-              <Plus className="w-5 h-5 mx-auto" />
-            </button>
-          )
-        ))}
+      {/* Bookmarks Section */}
+      <div className="fixed right-6 top-24 w-36 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-3 z-10">
+        <div className="flex items-center justify-between mb-3">
+          <span 
+            className="text-xs font-medium uppercase tracking-wider text-white/60"
+            style={{ color: currentTheme.primary }}
+          >
+            Bookmarks
+          </span>
+          <button 
+            onClick={() => addBookmark(bookmarks.findIndex(b => !b.url))} 
+            className="text-white/50 hover:text-white/80 transition-colors"
+            title="Add Bookmark"
+          >
+            <Plus className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="grid grid-cols-4 gap-2">
+          {bookmarks.map((bookmark, index) => (
+            bookmark.url ? (
+              <a
+                key={index}
+                href={bookmark.url}
+                className="block transform transition-all duration-200 ease-in-out hover:scale-110"
+                title={bookmark.title}
+              >
+                <div 
+                  className="w-10 h-10 flex items-center justify-center bg-white/10 backdrop-blur-xl rounded-lg border border-white/20 hover:border-white/40 group transition-all duration-300"
+                  style={{ color: currentTheme.primary }}
+                >
+                  <img 
+                    src={`https://www.google.com/s2/favicons?domain=${new URL(bookmark.url).hostname}&sz=32`} 
+                    alt={`${bookmark.title} favicon`}
+                    className="w-6 h-6 object-contain opacity-80 group-hover:opacity-100 transition-opacity"
+                    onError={(e) => {
+                      e.currentTarget.src = bookmark.icon;
+                      e.currentTarget.classList.add('text-xl');
+                    }}
+                  />
+                </div>
+              </a>
+            ) : (
+              <div key={index} className="w-10 h-10" />
+            )
+          ))}
+        </div>
       </div>
 
       {/* Sidebar - Updated styles */}
@@ -219,11 +332,11 @@ useEffect(() => {
           </button>
           <div className="space-y-8">
             <div>
-              <h3 className="text-sm font-medium uppercase tracking-wider mb-4" style={{ color: themeColor }}>Quick Links</h3>
+              <h3 className="text-sm font-medium uppercase tracking-wider mb-4" style={{ color: currentTheme.primary }}>Quick Links</h3>
               <div className="space-y-3">
-                <SidebarLink icon={<Book className="w-5 h-5" />} title="Sacred Texts" color={themeColor} />
-                <SidebarLink icon={<Heart className="w-5 h-5" />} title="Daily Practice" color={themeColor} />
-                <SidebarLink icon={<Coffee className="w-5 h-5" />} title="Mindfulness" color={themeColor} />
+                <SidebarLink icon={<Book className="w-5 h-5" />} title="Sacred Texts" color={currentTheme.primary} />
+                <SidebarLink icon={<Heart className="w-5 h-5" />} title="Daily Practice" color={currentTheme.primary} />
+                <SidebarLink icon={<Coffee className="w-5 h-5" />} title="Mindfulness" color={currentTheme.primary} />
               </div>
             </div>
           </div>
@@ -235,7 +348,7 @@ useEffect(() => {
         <button 
           onClick={() => setSidebarOpen(true)}
           className="fixed top-6 left-6 z-10 bg-white/5 backdrop-blur-lg p-3 rounded-full hover:bg-white/10 transition-all border border-white/10"
-          style={{ color: themeColor }}
+          style={{ color: currentTheme.primary }}
         >
           <Menu className="w-5 h-5" />
         </button>
@@ -244,7 +357,7 @@ useEffect(() => {
           <div className="space-y-12">
             {/* Time and Greeting */}
             <div className="text-center space-y-4">
-              <h1 className="text-7xl font-light tracking-tight" style={{ color: themeColor }}>
+              <h1 className="text-7xl font-light tracking-tight" style={{ color: currentTheme.primary }}>
                 {time.toLocaleTimeString('en-US', { 
                   hour: '2-digit', 
                   minute: '2-digit',
@@ -252,7 +365,7 @@ useEffect(() => {
                 })}
               </h1>
               <div>
-                <h2 className="text-4xl font-medium mb-2" style={{ color: themeColor }}>
+                <h2 className="text-4xl font-medium mb-2" style={{ color: currentTheme.primary }}>
                   {greeting}
                 </h2>
                 <p className="text-white/60">
@@ -268,7 +381,7 @@ useEffect(() => {
 
             {/* Shloka - Updated styles */}
             <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-8 space-y-6 border border-white/10">
-              <h3 className="text-sm font-medium uppercase tracking-wider" style={{ color: themeColor }}>
+              <h3 className="text-sm font-medium uppercase tracking-wider" style={{ color: currentTheme.primary }}>
                 Today's Shloka
               </h3>
               <div className="space-y-4">
@@ -293,19 +406,19 @@ useEffect(() => {
                 icon={<Sun className="w-6 h-6" />} 
                 title="Morning Prayer"
                 description="Start your day with devotion"
-                color={themeColor}
+                color={currentTheme.primary}
               />
               <QuickLink 
                 icon={<Moon className="w-6 h-6" />} 
                 title="Evening Reflection"
                 description="End your day in peace"
-                color={themeColor}
+                color={currentTheme.primary}
               />
               <QuickLink 
                 icon={<Wind className="w-6 h-6" />} 
                 title="Meditation"
                 description="Find your inner peace"
-                color={themeColor}
+                color={currentTheme.primary}
               />
             </div>
           </div>
@@ -315,25 +428,27 @@ useEffect(() => {
   );
 }
 
-function QuickLink({ icon: Icon, title, description, color }: QuickLinkProps) {
+function QuickLink({ icon, title, description, color = '#FFFFFF' }: QuickLinkProps) {
   return (
-    <a href="#" className="flex flex-col items-center bg-white/5 backdrop-blur-lg p-4 rounded-2xl hover:bg-white/10 transition-all border border-white/10">
+    <div className="flex flex-col items-center bg-white/5 backdrop-blur-lg p-4 rounded-2xl hover:bg-white/10 transition-all border border-white/10">
       <span className="mb-2" style={{ color }}>
-        <Icon />
+        {icon}
       </span>
-      <span className="text-sm font-medium text-white/80">{title}</span>
-      <span className="text-xs text-white/60">{description}</span>
-    </a>
+      {title && <span className="text-sm font-medium text-white/80">{title}</span>}
+      {description && <span className="text-xs text-white/60">{description}</span>}
+    </div>
   );
 }
 
-function SidebarLink({ icon: Icon, title, color }: SidebarLinkProps) {
+function SidebarLink({ icon, title, color = '#FFFFFF' }: SidebarLinkProps) {
   return (
     <a href="#" className="flex items-center space-x-3 text-white/60 hover:text-white transition-colors group">
-      <span style={{ color }}>
-        <Icon />
-      </span>
-      <span>{title}</span>
+      {icon && (
+        <span style={{ color }}>
+          {icon}
+        </span>
+      )}
+      {title && <span>{title}</span>}
     </a>
   );
 }
