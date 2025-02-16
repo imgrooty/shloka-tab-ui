@@ -39,15 +39,6 @@ Shloka Tab UI is a spiritual-themed browser extension/web application that provi
    ```bash
    npm install
    ```
-
-3. Set up environment variables
-   - Create a `.env` file in the root directory
-   - Add your Supabase credentials:
-     ```
-     VITE_SUPABASE_URL=your_supabase_project_url
-     VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-     ```
-
 ### Development
 ```bash
 npm run dev
@@ -81,5 +72,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## 🙏 Acknowledgments
 - Inspired by spiritual wisdom and technological innovation
-- Icons by Lucide
 - Styling with Tailwind CSS
