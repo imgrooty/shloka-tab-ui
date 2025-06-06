@@ -1,5 +1,3 @@
-# Shloka Tab UI
-
 ## 🌟 Project Overview
 Shloka Tab UI is a spiritual-themed browser extension/web application that provides a serene and inspirational new tab experience, featuring Sanskrit shlokas, customizable themes, and quick links.
 
@@ -73,3 +71,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## 🙏 Acknowledgments
 - Inspired by spiritual wisdom and technological innovation
 - Styling with Tailwind CSS
+](https://github.com/imgrooty/Groot_Entertainment)
